@@ -1,0 +1,61 @@
+{
+	"info": {
+		"_postman_id": "cb755834-e9e8-4bc7-89ad-a525aa838780",
+		"name": "jwt-auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14830732"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"testuser\",\"password\":\"password123\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5065/api/auth/login",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5065",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST \"https://localhost:5065/api/auth/login\"  -H \"Content-Type: application/json\"  -d \"{\\\"username\\\":\\\"testuser\\\",\\\"password\\\":\\\"password123\\\"}\""
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
