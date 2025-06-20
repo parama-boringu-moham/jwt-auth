@@ -1,4 +1,5 @@
 
+using JWT.BL;
 using JWT.BL.Services;
 using JWT.BL.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,37 +17,15 @@ public class Program
         builder.Logging.AddConsole();
         // Add services to the container.
         builder.Services.AddScoped<IJWTService, JWTService>();
-        
+
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
-        builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }
-        ).AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                        ValidAudience = builder.Configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-                    };
-                }
-        );
-
-        builder.Services.AddControllers().AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-        });
-
         builder.Services.AddAuthorization();
 
+        //builder.Services.AddServiceExtension(builder.Configuration);
+        AddC2CAuth(builder.Services, builder.Configuration);
+        builder.Services.AddControllers();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -64,5 +43,19 @@ public class Program
         app.MapControllers();
 
         app.Run();
+    }
+
+    private static IServiceCollection AddC2CAuth(IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.Authority = "https://dev-vzoilq7o.us.auth0.com/";
+            options.Audience = "next.jwt.api";
+        });
+        return services;
     }
 }
